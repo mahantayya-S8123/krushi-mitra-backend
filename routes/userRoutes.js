@@ -1,11 +1,14 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
 
-// Temporary stub routes
-router.post('/users', (req, res) => res.status(201).json({ ok: true }));
-router.get('/users', (req, res) => res.json([]));
-router.get('/users/:id', (req, res) => res.json({}));
-router.put('/users/:id', (req, res) => res.json({}));
-router.delete('/users/:id', (req, res) => res.json({}));
+// Example: secure password hashing (for later)
+router.post('/users', async (req, res) => {
+  const { password } = req.body;
+  const hashed = await bcrypt.hash(password, 10);
+  res.status(201).json({ hashed });
+});
 
 module.exports = router;
+
+
