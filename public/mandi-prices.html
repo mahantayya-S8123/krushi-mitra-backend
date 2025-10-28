@@ -2,41 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mandi Prices | KrushiMitra</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<header>
-  <div class="header-content">
-    <div class="logo">🌾 KrushiMitra</div>
-    <nav>
-      <ul class="nav-menu">
-        <li><a href="dashboard.html">Dashboard</a></li>
-        <li><a href="mandi-prices.html" class="active">Mandi Prices</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="advisory.html">Advisory</a></li>
-        <li><a href="#" onclick="logout()">Logout</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="header-content">
+      <div class="logo">🌾 KrushiMitra</div>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="mandi-prices.html" class="active">Mandi Prices</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="advisory.html">Advisory</a></li>
+          <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-<main class="container">
-  <h1>Mandi Prices Today</h1>
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="container">
+    <h1>📈 Mandi Prices Today</h1>
+    <p>Get live updates of crop prices across major markets.</p>
 
-  <div class="form-group">
-    <input type="text" id="mandiSearch" placeholder="Search crop..." onkeyup="filterMandiPrices()">
-  </div>
+    <!-- Search Bar -->
+    <div class="form-group">
+      <input
+        type="text"
+        id="mandiSearch"
+        placeholder="🔍 Search crop or market..."
+        onkeyup="filterMandiPrices()"
+      />
+    </div>
 
-  <div id="mandiPricesContainer" class="grid grid-3"></div>
-</main>
+    <!-- Loader -->
+    <div id="priceSpinner" class="loader" style="display: none;">Loading prices...</div>
 
-<footer>
-  <p>© 2025 KrushiMitra. Empowering Indian Farmers 🌾</p>
-</footer>
+    <!-- Prices List -->
+    <div id="mandiPricesContainer" class="grid grid-3"></div>
+  </main>
 
-<script src="js/common.js"></script>
-<script src="js/mandi-prices.js"></script>
-</body>
-</html>
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>© 2025 KrushiMitra. Empowering Ind
+

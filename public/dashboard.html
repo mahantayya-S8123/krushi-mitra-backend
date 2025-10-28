@@ -3,54 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <title>KrushiMitra Dashboard</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
 </head>
 <body>
 
-<header>
-  <div class="header-content">
-    <div class="logo">🌾 KrushiMitra</div>
-    <nav>
-      <ul class="nav-menu">
-        <li><a href="dashboard.html" class="active">Dashboard</a></li>
-        <li><a href="mandi-prices.html">Mandi Prices</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="advisory.html">Advisory</a></li>
-        <li><a href="#" onclick="logout()">Logout</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="logo">🌾 KrushiMitra</div>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="dashboard.html" class="active">Dashboard</a></li>
+          <li><a href="mandi-prices.html">Mandi Prices</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="advisory.html">Advisory</a></li>
+          <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-<main class="container">
-  <section class="welcome-section">
-    <h1 id="welcomeMessage">Welcome Farmer 👋</h1>
-    <p>Here’s your daily overview and quick access tools.</p>
-  </section>
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+      <h1 id="welcomeMessage">Welcome back, <span id="userName">Farmer</span> 👋</h1>
+      <p>Here’s your daily overview and quick access tools.</p>
+    </section>
 
-  <section class="grid grid-3" id="quickStats"></section>
+    <!-- Quick Stats -->
+    <section id="quickStats" class="grid grid-3"></section>
 
-  <div class="action-grid">
-    <a href="mandi-prices.html" class="action-card">
-      <div class="action-icon">📈</div>
-      <div class="action-title">Mandi Prices</div>
-    </a>
-    <a href="services.html" class="action-card">
-      <div class="action-icon">🛠️</div>
-      <div class="action-title">Book Services</div>
-    </a>
-    <a href="advisory.html" class="action-card">
-      <div class="action-icon">💬</div>
-      <div class="action-title">Expert Advice</div>
-    </a>
-  </div>
-</main>
+    <!-- Weather and Market Data -->
+    <section class="data-section">
+      <h2>🌦️ Weather Update</h2>
+      <p id="weather">Loading weather...</p>
 
-<footer>
-  <p>© 2025 KrushiMitra. Empowering Indian Farmers 🌾</p>
-</footer>
+      <h2>📈 Latest Mandi Prices</h2>
+      <ul id="marketUpdates">Loading mandi data...</ul>
+    </section>
 
-<script src="js/common.js"></script>
-<script src="js/dashboard.js"></script>
-</body>
-</html>
+    <!-- Quick Actions -->
+    <div class="action-grid">
+      <a href="mandi-prices.html" class="action-card">
+        <div class="action-icon">📊</div>
+        <div class="action-title">Mandi Prices</div>
+      </a>
+      <a href="services.html" class="actio
