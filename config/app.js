@@ -2,9 +2,6 @@
 // KrushiMitra - Unified Backend + Frontend Server
 // =========================================
 
-// --------------------
-// Import required modules
-// --------------------
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -16,8 +13,6 @@ const path = require("path");
 // --------------------
 dotenv.config();
 const app = express();
-
-// ✅ Render dynamically assigns port
 const PORT = process.env.PORT || 4000;
 
 // --------------------
@@ -41,21 +36,14 @@ mongoose
     process.exit(1);
   });
 
-mongoose.connection.on("disconnected", () => {
-  console.log("⚠️ MongoDB disconnected. Retrying connection...");
-});
-
 // --------------------
 // Routes
 // --------------------
-
-// ✅ Ensure these files exist inside /routes folder
 const authRoutes = require("../routes/authRoutes");
 const serviceRoutes = require("../routes/servicesRoutes");
 const mandiRoutes = require("../routes/mandiRoutes");
 const productRoutes = require("../routes/productRoutes");
 
-// ✅ Route Mounting
 app.use("/api/auth", authRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/mandi", mandiRoutes);
@@ -92,14 +80,15 @@ app.post("/api/test-db", async (req, res) => {
 app.get("/api/ping", (req, res) => res.send("pong"));
 
 // --------------------
-// Frontend Integration
+// Serve Frontend
 // --------------------
-// ✅ Serve static frontend files (HTML, CSS, JS)
+
+// ✅ Serve static frontend files
 app.use(express.static(path.join(__dirname, "../public")));
 
-// ✅ Fallback for any unknown routes
+// ✅ Send index.html for any unknown routes
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "index.html"));
+  res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 // --------------------
