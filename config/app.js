@@ -1,4 +1,4 @@
-/// =========================================
+// =========================================
 // KrushiMitra - Unified Backend + Frontend Server
 // =========================================
 
@@ -17,7 +17,7 @@ const path = require("path");
 dotenv.config();
 const app = express();
 
-// ✅ Ensure PORT variable (Render uses dynamic port)
+// ✅ Render dynamically assigns port
 const PORT = process.env.PORT || 4000;
 
 // --------------------
@@ -33,8 +33,6 @@ mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
   })
   .then(() => console.log("✅ MongoDB Connected Successfully"))
   .catch((err) => {
@@ -49,20 +47,24 @@ mongoose.connection.on("disconnected", () => {
 // --------------------
 // Routes
 // --------------------
-const authRoutes = require("../routes/authRoutes");
-const userRoutes = require("../routes/userRoutes");
-const serviceRoutes = require("../routes/serviceRoutes"); // ✅ Added here
 
+// ✅ Ensure these files exist inside /routes folder
+const authRoutes = require("../routes/authRoutes");
+const serviceRoutes = require("../routes/servicesRoutes");
+const mandiRoutes = require(path.join(__dirname, "../routes/mandiRoutes"));
+const productRoutes = require("../routes/productRoutes");
+
+// ✅ Route Mounting
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api", serviceRoutes); // ✅ Mounted properly
+app.use("/api/services", serviceRoutes);
+app.use("/api/mandi", mandiRoutes);
+app.use("/api/products", productRoutes);
 
 // --------------------
 // Test DB Routes
 // --------------------
 const User = require("../models/User");
 
-// GET all users
 app.get("/api/test-db", async (req, res) => {
   try {
     const users = await User.find();
@@ -72,7 +74,6 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
-// POST create test user
 app.post("/api/test-db", async (req, res) => {
   try {
     const { name, email, password, role, location } = req.body;
@@ -92,10 +93,10 @@ app.get("/api/ping", (req, res) => res.send("pong"));
 // --------------------
 // Frontend Integration
 // --------------------
-// ✅ Serve static frontend files (from /public)
+// ✅ Serve frontend (static)
 app.use(express.static(path.join(__dirname, "../public")));
 
-// ✅ Fallback route for SPA / HTML pages
+// ✅ Fallback for SPA
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../public", "index.html"));
 });

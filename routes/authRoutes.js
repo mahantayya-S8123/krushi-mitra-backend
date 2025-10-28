@@ -1,24 +1,14 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-// Dummy Login Route
-router.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  res.json({ id: 1, name: 'Test User', email });
+// Login route
+router.post("/login", (req, res) => {
+  res.json({ message: "Login successful" });
 });
 
-// Dummy Signup Route
-router.post('/signup', (req, res) => {
-  const { name, email, phone, role, location, password } = req.body;
-  res.json({ id: 2, name, email, phone, role, location });
-});
-
-// Dummy Mandi Prices
-router.get('/mandi-prices', (req, res) => {
-  res.json([
-    { crop: 'Wheat', price: 2000 },
-    { crop: 'Rice', price: 3000 }
-  ]);
+// Register route
+router.post("/register", (req, res) => {
+  res.json({ message: "User registered successfully" });
 });
 
 module.exports = router;
