@@ -1,107 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KrushiMitra - Farmer's Digital Companion</title>
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KrushiMitra | Smart Digital Companion</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
-
 <body>
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <h1>🌾 KrushiMitra</h1>
-                <p>Smart Digital Companion for Farmers</p>
-            </div>
 
-            <!-- ================= Login Form ================= -->
-            <div class="auth-form active" id="loginForm">
-                <h2>Welcome Back!</h2>
-                <form id="loginFormElement">
-                    <div class="form-group">
-                        <label for="loginEmail">📧 Email Address</label>
-                        <input type="email" id="loginEmail" required placeholder="Enter your email">
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword">🔒 Password</label>
-                        <input type="password" id="loginPassword" required placeholder="Enter your password">
-                    </div>
-                    <button type="submit" class="btn-primary">
-                        <span>Login</span>
-                        <span class="loading-spinner" id="loginSpinner" style="display: none;"></span>
-                    </button>
-                </form>
-                <p class="auth-switch">
-                    Don't have an account? <a href="#" id="goToSignup">Sign up now</a>
-                </p>
-                <div class="lang-selector">
-                    <select id="langSelect" onchange="changeLanguage(this.value)">
-                        <option value="en">🌐 English</option>
-                        <option value="hi">🌐 हिंदी</option>
-                        <option value="mr">🌐 मराठी</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- ================= Signup Form ================= -->
-            <div class="auth-form" id="signupForm">
-                <h2>Create Account</h2>
-                <form id="signupFormElement">
-                    <div class="form-group">
-                        <label for="signupName">👤 Full Name</label>
-                        <input type="text" id="signupName" required placeholder="Enter your full name">
-                    </div>
-                    <div class="form-group">
-                        <label for="signupEmail">📧 Email Address</label>
-                        <input type="email" id="signupEmail" required placeholder="Enter your email">
-                    </div>
-                    <div class="form-group">
-                        <label for="signupPhone">📱 Phone Number</label>
-                        <input type="tel" id="signupPhone" required placeholder="Enter your phone number">
-                    </div>
-                    <div class="form-group">
-                        <label for="signupPassword">🔒 Password</label>
-                        <input type="password" id="signupPassword" required placeholder="Create a strong password">
-                    </div>
-                    <div class="form-group">
-                        <label for="signupConfirmPassword">🔒 Confirm Password</label>
-                        <input type="password" id="signupConfirmPassword" required placeholder="Re-enter your password">
-                    </div>
-                    <button type="submit" class="btn-primary">
-                        <span>Sign Up</span>
-                        <span class="loading-spinner" id="signupSpinner" style="display: none;"></span>
-                    </button>
-                </form>
-                <p class="auth-switch">
-                    Already have an account? <a href="#" id="goToLogin">Login</a>
-                </p>
-                <div class="lang-selector">
-                    <select id="langSelect2" onchange="changeLanguage(this.value)">
-                        <option value="en">🌐 English</option>
-                        <option value="hi">🌐 हिंदी</option>
-                        <option value="mr">🌐 मराठी</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- ================= Messages ================= -->
-            <div id="successMessage" class="success-message" style="display: none;">
-                <p>✅ Account created successfully!</p>
-                <p>Please login to continue.</p>
-            </div>
-
-            <div id="errorMessage" class="error-message" style="display: none;">
-                <p id="errorText"></p>
-            </div>
-        </div>
+<div class="auth-container fade-in">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>🌾 KrushiMitra</h1>
+      <p>Smart Digital Companion for Farmers</p>
     </div>
 
-    <!-- ================= Scripts ================= -->
-    <script src="js/common.js"></script>
-    <script src="js/auth.js"></script>
+    <!-- Login Form -->
+    <form id="loginForm" class="auth-form active">
+      <h2>Login</h2>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+      <div class="auth-switch">
+        Don't have an account? <a href="#" id="goToSignup">Sign up</a>
+      </div>
+    </form>
+
+    <!-- Signup Form -->
+    <form id="signupForm" class="auth-form">
+      <h2>Sign Up</h2>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="signupName" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="signupEmail" required>
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" id="signupPhone" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signupPassword" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Sign Up</button>
+      <div class="auth-switch">
+        Already have an account? <a href="#" id="goToLogin">Login</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/common.js"></script>
+<script src="js/auth.js"></script>
 </body>
 </html>

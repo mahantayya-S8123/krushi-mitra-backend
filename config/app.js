@@ -1,4 +1,4 @@
-// =========================================
+/// =========================================
 // KrushiMitra - Unified Backend + Frontend Server
 // =========================================
 
@@ -51,8 +51,11 @@ mongoose.connection.on("disconnected", () => {
 // --------------------
 const authRoutes = require("../routes/authRoutes");
 const userRoutes = require("../routes/userRoutes");
+const serviceRoutes = require("../routes/serviceRoutes"); // ✅ Added here
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api", serviceRoutes); // ✅ Mounted properly
 
 // --------------------
 // Test DB Routes

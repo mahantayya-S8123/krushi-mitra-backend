@@ -1,111 +1,66 @@
-// ========================================
-// KrushiMitra - Mandi Prices Logic
-// ========================================
+/* mandi-prices.js */
+let mandiData = [];
 
-// Mock data for mandi prices
-const mandiPrices = [
-    { crop: 'Wheat', market: 'Delhi', price: 2350, unit: 'quintal', change: '+5%', positive: true },
-    { crop: 'Rice', market: 'Mumbai', price: 1850, unit: 'quintal', change: '+2%', positive: true },
-    { crop: 'Cotton', market: 'Ahmedabad', price: 7200, unit: 'quintal', change: '-3%', positive: false },
-    { crop: 'Tomato', market: 'Bangalore', price: 35, unit: 'kg', change: '+8%', positive: true },
-    { crop: 'Potato', market: 'Pune', price: 25, unit: 'kg', change: '-5%', positive: false },
-    { crop: 'Onion', market: 'Nashik', price: 28, unit: 'kg', change: '+12%', positive: true },
-    { crop: 'Sugarcane', market: 'Kolhapur', price: 285, unit: 'quintal', change: '+3%', positive: true },
-    { crop: 'Soybean', market: 'Indore', price: 4500, unit: 'quintal', change: '-2%', positive: false }
-];
+document.addEventListener('DOMContentLoaded', loadMandiPrices);
 
-let filteredPrices = [...mandiPrices];
+async function loadMandiPrices() {
+  const container = document.getElementById('mandiPricesContainer');
+  if (!container) return;
 
-document.addEventListener('DOMContentLoaded', function() {
-    initMandiPrices();
-});
-
-function initMandiPrices() {
-    // Check if user is logged in
-    const user = getCurrentUser();
-    if (!user) {
-        window.location.href = 'index.html';
-        return;
-    }
-    
-    displayUserInfo(user);
-    loadPrices();
-    setupFilters();
+  // Try API
+  const res = await authFetch(`${BASE_URL}/api/prices`, { method: 'GET' });
+  if (res.ok && Array.isArray(res.data)) {
+    mandiData = res.data;
+  } else if (res.ok && res.data.prices) {
+    mandiData = res.data.prices;
+  } else {
+    // fallback mock
+    mandiData = [
+      { crop: 'Wheat', market: 'Delhi', price: 2350, unit: '₹/qtl', change: '+5%', positive: true },
+      { crop: 'Rice', market: 'Mumbai', price: 1850, unit: '₹/qtl', change: '+2%', positive: true },
+      { crop: 'Tomato', market: 'Bangalore', price: 35, unit: '₹/kg', change: '+8%', positive: true }
+    ];
+  }
+  renderMandi(mandiData);
 }
 
-function displayUserInfo(user) {
-    const userNameElements = document.querySelectorAll('.user-name');
-    userNameElements.forEach(el => {
-        if (el) el.textContent = user.name;
-    });
+function renderMandi(list) {
+  const container = document.getElementById('mandiPricesContainer');
+  if (!container) return;
+  if (list.length === 0) container.innerHTML = '<p>No prices available</p>';
+  container.innerHTML = list.map(p => `
+    <div class="card">
+      <h3>${p.crop}</h3>
+      <p><small>${p.market}</small></p>
+      <p class="price">${p.price} ${p.unit}</p>
+      <p class="price-change ${p.positive ? 'positive' : 'negative'}">${p.change}</p>
+      <div style="margin-top:10px;">
+        <button class="btn btn-small" onclick="readPriceAloud('${p.crop}', ${p.price}, '${p.market}')">🔊 Read</button>
+      </div>
+    </div>
+  `).join('');
 }
 
-function loadPrices() {
-    const pricesContainer = document.getElementById('pricesContainer');
-    if (!pricesContainer) return;
-    
-    pricesContainer.innerHTML = filteredPrices.map(price => `
-        <tr>
-            <td><strong>${price.crop}</strong></td>
-            <td>${price.market}</td>
-            <td>₹${price.price}/${price.unit}</td>
-            <td class="price-change ${price.positive ? 'positive' : 'negative'}">
-                <strong>${price.change}</strong>
-            </td>
-            <td>
-                <button onclick="readPriceAloud('${price.crop}', ${price.price}, '${price.market}')" 
-                        class="btn btn-small">
-                    🔊 Read
-                </button>
-            </td>
-        </tr>
-    `).join('');
-}
-
-function setupFilters() {
-    const searchInput = document.getElementById('searchInput');
-    const marketFilter = document.getElementById('marketFilter');
-    
-    if (searchInput) {
-        searchInput.addEventListener('input', filterPrices);
-    }
-    
-    if (marketFilter) {
-        marketFilter.addEventListener('change', filterPrices);
-    }
-}
-
-function filterPrices() {
-    const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
-    const selectedMarket = document.getElementById('marketFilter')?.value || '';
-    
-    filteredPrices = mandiPrices.filter(price => {
-        const matchesSearch = price.crop.toLowerCase().includes(searchTerm);
-        const matchesMarket = !selectedMarket || price.market === selectedMarket;
-        return matchesSearch && matchesMarket;
-    });
-    
-    loadPrices();
+function filterMandiPrices() {
+  const q = (document.getElementById('mandiSearch')?.value || '').toLowerCase();
+  const filtered = mandiData.filter(p => p.crop.toLowerCase().includes(q) || p.market.toLowerCase().includes(q));
+  renderMandi(filtered);
 }
 
 function readPriceAloud(crop, price, market) {
-    const text = `${crop} price in ${market} is rupees ${price} per quintal`;
-    speak(text);
+  speak(`${crop} price in ${market} is rupees ${price}`);
 }
 
+/* read all with stop support */
+let readingUtter = null;
 function readAllPrices() {
-    if (filteredPrices.length === 0) {
-        speak('No prices to read');
-        return;
-    }
-    
-    let text = 'Current market prices: ';
-    filteredPrices.forEach((price, index) => {
-        text += `${price.crop} in ${price.market} is rupees ${price.price}. `;
-        if (index < filteredPrices.length - 1) {
-            text += 'Next, ';
-        }
-    });
-    
-    speak(text);
+  if (!mandiData || mandiData.length === 0) return speak('No prices to read');
+  const text = mandiData.map(p => `${p.crop} in ${p.market} is ${p.price} rupees`).join('. Next, ');
+  speak(text);
 }
+function stopReading() { speechSynthesis?.cancel(); }
+
+window.filterMandiPrices = filterMandiPrices;
+window.readPriceAloud = readPriceAloud;
+window.readAllPrices = readAllPrices;
+window.stopReading = stopReading;

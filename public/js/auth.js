@@ -1,178 +1,77 @@
-// ========================================
-// KrushiMitra - Authentication Logic (Connected to Live Backend)
-// ========================================
+/* auth.js — login & signup */
+document.addEventListener('DOMContentLoaded', () => {
+  // form elements
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+  const goToSignup = document.getElementById('goToSignup');
+  const goToLogin = document.getElementById('goToLogin');
 
-document.addEventListener('DOMContentLoaded', function() {
-    initAuth();
-    initAuthTabs();
-});
+  function showForm(which) {
+    if (loginForm) loginForm.classList.toggle('active', which === 'login');
+    if (signupForm) signupForm.classList.toggle('active', which === 'signup');
+  }
 
-// Initialize authentication
-function initAuth() {
-    const loginForm = document.getElementById('loginFormElement');
-    if (loginForm) loginForm.addEventListener('submit', handleLogin);
+  goToSignup?.addEventListener('click', (e)=> { e.preventDefault(); showForm('signup'); });
+  goToLogin?.addEventListener('click', (e)=> { e.preventDefault(); showForm('login'); });
 
-    const signupForm = document.getElementById('signupFormElement');
-    if (signupForm) signupForm.addEventListener('submit', handleSignup);
-}
-
-// ========================================
-// Backend Base URL
-// ========================================
-const BASE_URL = "https://krushi-mitra-backend-1.onrender.com";
-
-// ========================================
-// Login Handler
-// ========================================
-async function handleLogin(e) {
+  loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-
-    if (!email || !password) return showError('Please fill all fields');
-    if (!isValidEmail(email)) return showError('Invalid email format');
+    const email = document.getElementById('loginEmail')?.value.trim();
+    const password = document.getElementById('loginPassword')?.value || '';
+    if (!email || !password) return showNotification('Please fill all fields', 'error');
+    if (!isValidEmail(email)) return showNotification('Invalid email', 'error');
 
     showLoader('loginSpinner');
-    hideMessages();
+    const { ok, data, error } = await authFetch(`${BASE_URL}/api/users/login`, {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+    hideLoader('loginSpinner');
 
-    try {
-        const res = await fetch(`${BASE_URL}/api/users/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            showSuccess('✅ Login Successful! Redirecting...');
-            speak('Login successful');
-
-            setTimeout(() => {
-                if (data.user.role === 'farmer') window.location.href = 'dashboard.html';
-                else if (data.user.role === 'vendor') window.location.href = 'vendor.html';
-                else window.location.href = 'admin.html';
-            }, 1500);
-        } else {
-            showError(data.message || 'Login failed. Please try again.');
-            speak('Login failed');
-        }
-    } catch (err) {
-        showError('⚠️ Server not reachable. Please check connection.');
-    } finally {
-        hideLoader('loginSpinner');
+    if (ok && data.token) {
+      localStorage.setItem('token', data.token);
+      setCurrentUser(data.user || { name: data.name || email });
+      showNotification('Login successful');
+      speak('Login successful');
+      // redirect
+      const role = (data.user && data.user.role) || 'farmer';
+      setTimeout(()=> {
+        if (role === 'farmer') window.location.href = 'dashboard.html';
+        else if (role === 'vendor') window.location.href = 'marketplace.html';
+        else window.location.href = 'dashboard.html';
+      }, 600);
+    } else {
+      showNotification(data?.message || error || 'Login failed', 'error');
+      speak('Login failed');
     }
-}
+  });
 
-// ========================================
-// Signup Handler
-// ========================================
-async function handleSignup(e) {
+  signupForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    const name = document.getElementById('signupName').value.trim();
-    const email = document.getElementById('signupEmail').value.trim();
-    const password = document.getElementById('signupPassword').value;
-    const role = document.getElementById('signupRole').value;
-    const location = document.getElementById('signupLocation').value.trim();
-
-    if (!name || !email || !password) return showError('Please fill all fields');
-    if (!isValidEmail(email)) return showError('Invalid email');
-    if (password.length < 6) return showError('Password must be ≥ 6 chars');
+    const name = document.getElementById('signupName')?.value.trim();
+    const email = document.getElementById('signupEmail')?.value.trim();
+    const phone = document.getElementById('signupPhone')?.value.trim();
+    const password = document.getElementById('signupPassword')?.value || '';
+    if (!name || !email || !phone || !password) return showNotification('Please fill all fields', 'error');
+    if (!isValidEmail(email)) return showNotification('Invalid email', 'error');
+    if (password.length < 6) return showNotification('Password must be ≥ 6 chars', 'error');
 
     showLoader('signupSpinner');
-    hideMessages();
+    const { ok, data, error } = await authFetch(`${BASE_URL}/api/users/signup`, {
+      method: 'POST',
+      body: JSON.stringify({ name, email, phone, password })
+    });
+    hideLoader('signupSpinner');
 
-    try {
-        const res = await fetch(`${BASE_URL}/api/users/signup`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password, role, location })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-            showSuccess('🎉 Signup successful! Please log in.');
-            speak('Signup successful');
-            document.getElementById('signupFormElement').reset();
-            setTimeout(() => showLogin(), 1500);
-        } else {
-            showError(data.message || 'Signup failed.');
-            speak('Signup failed');
-        }
-    } catch (err) {
-        showError('⚠️ Server not reachable. Please check connection.');
-    } finally {
-        hideLoader('signupSpinner');
+    if (ok) {
+      showNotification('Signup successful — please login');
+      speak('Signup successful');
+      // reset & show login
+      signupForm.reset();
+      showForm('login');
+    } else {
+      showNotification(data?.message || error || 'Signup failed', 'error');
+      speak('Signup failed');
     }
-}
-
-// ========================================
-// Auth Tab Switching Logic
-// ========================================
-function initAuthTabs() {
-    const signupLink = document.querySelector('#goToSignup');
-    const loginLink = document.querySelector('#goToLogin');
-
-    if (signupLink) {
-        signupLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            showSignup();
-        });
-    }
-
-    if (loginLink) {
-        loginLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            showLogin();
-        });
-    }
-}
-
-function showLogin() {
-    document.getElementById('loginForm').classList.add('active');
-    document.getElementById('signupForm').classList.remove('active');
-}
-
-function showSignup() {
-    document.getElementById('signupForm').classList.add('active');
-    document.getElementById('loginForm').classList.remove('active');
-}
-
-// ========================================
-// Utility Helpers
-// ========================================
-function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function showError(msg) {
-    alert('❌ ' + msg);
-}
-
-function showSuccess(msg) {
-    alert(msg);
-}
-
-function hideMessages() {}
-
-function showLoader(id) {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'inline-block';
-}
-
-function hideLoader(id) {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-}
-
-function speak(text) {
-    if ('speechSynthesis' in window) {
-        const utter = new SpeechSynthesisUtterance(text);
-        speechSynthesis.speak(utter);
-    }
-}
+  });
+});

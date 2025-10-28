@@ -1,197 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KrushiMitra - Dashboard</title>
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>KrushiMitra Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="lang-controls">
-            <select id="langSelect" onchange="changeLanguage(this.value)">
-                <option value="en">🌐 English</option>
-                <option value="hi">🌐 हिंदी</option>
-                <option value="mr">🌐 मराठी</option>
-            </select>
-            <button onclick="toggleVoice()" class="voice-btn" title="Toggle Voice">
-                🔊
-            </button>
-        </div>
-    </div>
 
-    <!-- Header -->
-    <header>
-        <div class="header-content">
-            <div class="logo">
-                🌾 KrushiMitra
-            </div>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="dashboard.html" class="active">Dashboard</a></li>
-                    <li><a href="mandi-prices.html">Mandi Prices</a></li>
-                    <li><a href="marketplace.html">Marketplace</a></li>
-                    <li><a href="services.html">Services</a></li>
-                    <li><a href="advisory.html">Advisory</a></li>
-                </ul>
-            </nav>
-            <div class="user-menu">
-                <span class="user-name">User</span>
-                <button onclick="logout()" class="btn btn-small">Logout</button>
-            </div>
-        </div>
-    </header>
+<header>
+  <div class="header-content">
+    <div class="logo">🌾 KrushiMitra</div>
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="mandi-prices.html">Mandi Prices</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="advisory.html">Advisory</a></li>
+        <li><a href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
-    <!-- Main Content -->
-    <main>
-        <div class="container">
-            <!-- Welcome Section -->
-            <div class="welcome-section">
-                <h1 id="welcomeMessage">Good morning! 👋</h1>
-                <p>Welcome to your farming dashboard</p>
-            </div>
+<main class="container">
+  <section class="welcome-section">
+    <h1 id="welcomeMessage">Welcome Farmer 👋</h1>
+    <p>Here’s your daily overview and quick access tools.</p>
+  </section>
 
-            <!-- Stats Grid -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Quick Stats</h2>
-                </div>
-                <div class="grid grid-4" id="statsContainer">
-                    <!-- Stats loaded by JS -->
-                </div>
-            </div>
+  <section class="grid grid-3" id="quickStats"></section>
 
-            <!-- Quick Actions -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Quick Actions</h2>
-                </div>
-                <div class="action-grid">
-                    <a href="mandi-prices.html" class="action-card">
-                        <div class="action-icon">📊</div>
-                        <div class="action-title">Mandi Prices</div>
-                        <p>View live crop prices from markets</p>
-                    </a>
-                    <a href="marketplace.html" class="action-card">
-                        <div class="action-icon">🛒</div>
-                        <div class="action-title">Marketplace</div>
-                        <p>Buy seeds, fertilizers & equipment</p>
-                    </a>
-                    <a href="services.html" class="action-card">
-                        <div class="action-icon">🚜</div>
-                        <div class="action-title">Services</div>
-                        <p>Book tractor, harvesting & more</p>
-                    </a>
-                    <a href="advisory.html" class="action-card">
-                        <div class="action-icon">🌱</div>
-                        <div class="action-title">Advisory</div>
-                        <p>Weather, tips & expert advice</p>
-                    </a>
-                </div>
-            </div>
+  <div class="action-grid">
+    <a href="mandi-prices.html" class="action-card">
+      <div class="action-icon">📈</div>
+      <div class="action-title">Mandi Prices</div>
+    </a>
+    <a href="services.html" class="action-card">
+      <div class="action-icon">🛠️</div>
+      <div class="action-title">Book Services</div>
+    </a>
+    <a href="advisory.html" class="action-card">
+      <div class="action-icon">💬</div>
+      <div class="action-title">Expert Advice</div>
+    </a>
+  </div>
+</main>
 
-            <!-- Recent Activity & Price Alerts -->
-            <div class="grid grid-2">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Recent Activity</h3>
-                    </div>
-                    <div id="recentActivity">
-                        <!-- Loaded by JS -->
-                    </div>
-                </div>
+<footer>
+  <p>© 2025 KrushiMitra. Empowering Indian Farmers 🌾</p>
+</footer>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Price Alerts</h3>
-                    </div>
-                    <div id="priceAlerts">
-                        <!-- Loaded by JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Support</h3>
-                <p>📞 +91 1800 123 4567</p>
-                <p>✉️ support@krushimitra.com</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <a href="mandi-prices.html">Mandi Prices</a>
-                <a href="marketplace.html">Marketplace</a>
-                <a href="services.html">Services</a>
-                <a href="advisory.html">Advisory</a>
-            </div>
-        </div>
-        <p>&copy; 2024 KrushiMitra. All rights reserved.</p>
-    </footer>
-
-    <script src="js/common.js"></script>
-    <script src="js/dashboard.js"></script>
-
-    <style>
-        .activity-item {
-            display: flex;
-            gap: 12px;
-            padding: 12px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .activity-icon {
-            font-size: 1.5rem;
-        }
-        
-        .activity-details {
-            flex: 1;
-        }
-        
-        .activity-text {
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
-        
-        .activity-time {
-            color: var(--text-light);
-        }
-        
-        .price-alert-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .price-info strong {
-            display: block;
-        }
-        
-        .price-info small {
-            color: var(--text-light);
-        }
-        
-        .price {
-            color: var(--primary-green);
-            font-weight: 600;
-        }
-        
-        .price-change.positive {
-            color: var(--success);
-        }
-        
-        .price-change.negative {
-            color: var(--error);
-        }
-    </style>
+<script src="js/common.js"></script>
+<script src="js/dashboard.js"></script>
 </body>
 </html>

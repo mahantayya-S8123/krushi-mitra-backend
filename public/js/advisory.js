@@ -1,246 +1,56 @@
-// ========================================
-// KrushiMitra - Advisory Logic
-// ========================================
+/**
+ * advisory.js
+ * KrushiMitra - AI Advisory + Weather Assistant
+ * Fetches live weather + gives smart crop suggestions.
+ */
 
-let adviceData = [];
+const weatherInfo = document.getElementById("weatherInfo");
 
-document.addEventListener('DOMContentLoaded', function() {
-    initAdvisory();
-});
+// === AUTO FETCH WEATHER ===
+async function getWeather() {
+  try {
+    weatherInfo.innerHTML = "🌦 Fetching local weather data...";
+    const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=16.83&longitude=75.71&daily=temperature_2m_max,precipitation_sum&forecast_days=1");
+    const data = await res.json();
 
-// Initialize advisory
-function initAdvisory() {
-    loadWeather();
-    loadAdvice();
-    loadCropCalendar();
-    loadSchemes();
-    loadExperts();
-}
+    const temp = data.daily.temperature_2m_max[0];
+    const rain = data.daily.precipitation_sum[0];
 
-// Load weather information
-function loadWeather() {
-    const container = document.getElementById('weatherInfo');
-    
-    if (container) {
-        container.innerHTML = `
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                <div style="padding: 1rem; background: linear-gradient(135deg, #4CAF50, #2E8B57); color: white; border-radius: var(--border-radius);">
-                    <h3 style="margin-bottom: 0.5rem;">🌤️ Today</h3>
-                    <p style="font-size: 2rem; margin: 0.5rem 0;">28°C</p>
-                    <p style="margin: 0;">Partly Cloudy</p>
-                </div>
-                <div style="padding: 1rem; background: #2196F3; color: white; border-radius: var(--border-radius);">
-                    <h3 style="margin-bottom: 0.5rem;">🌧️ Tomorrow</h3>
-                    <p style="font-size: 2rem; margin: 0.5rem 0;">26°C</p>
-                    <p style="margin: 0;">Light Rain Expected</p>
-                </div>
-                <div style="padding: 1rem; background: #FF9800; color: white; border-radius: var(--border-radius);">
-                    <h3 style="margin-bottom: 0.5rem;">📊 This Week</h3>
-                    <p style="font-size: 2rem; margin: 0.5rem 0;">24-30°C</p>
-                    <p style="margin: 0;">Mixed Weather</p>
-                </div>
-            </div>
-            <div style="margin-top: 1rem; padding: 1rem; background: var(--light-green); border-radius: var(--border-radius);">
-                <p><strong>💡 Advisory:</strong> Light rain expected tomorrow. Avoid spraying pesticides today.</p>
-            </div>
-        `;
+    let advice = "";
+    if (rain > 5) {
+      advice = "🌧️ Expect rainfall — delay fertilizer use and ensure drainage.";
+    } else if (temp > 34) {
+      advice = "🔥 High temperature — irrigate crops early morning or evening.";
+    } else {
+      advice = "🌿 Good weather — perfect for sowing or light pesticide spray.";
     }
+
+    weatherInfo.innerHTML = `
+      <div class="weather-card">
+        <h3>Bijapur Weather</h3>
+        <p><b>Max Temp:</b> ${temp}°C</p>
+        <p><b>Rainfall:</b> ${rain} mm</p>
+        <hr>
+        <p><b>Advisory:</b> ${advice}</p>
+      </div>
+    `;
+  } catch (err) {
+    weatherInfo.innerHTML = "⚠️ Could not fetch weather. Please try again.";
+    console.error("Weather fetch error:", err);
+  }
 }
 
-// Load advice data
-function loadAdvice() {
-    adviceData = [
-        { id: 1, title: 'Optimal Time for Sowing Wheat', category: 'seasonal', content: 'Sow wheat between November 15-30 for best results. Prepare soil with proper irrigation.', icon: '🌾' },
-        { id: 2, title: 'Control Aphids Naturally', category: 'pest', content: 'Mix neem oil with water and spray on affected plants. Use ladybugs as natural predators.', icon: '🐛' },
-        { id: 3, title: 'Proper Fertilizer Application', category: 'fertilizer', content: 'Apply fertilizers in morning hours. Mix with soil and water immediately after application.', icon: '🌿' },
-        { id: 4, title: 'Water Management in Summer', category: 'water', content: 'Water crops early morning or late evening. Use drip irrigation to save water.', icon: '💧' },
-        { id: 5, title: 'Rice Planting Season', category: 'seasonal', content: 'Transplant rice seedlings in June-July. Maintain proper water level in fields.', icon: '🌾' },
-        { id: 6, title: 'Compost Making', category: 'fertilizer', content: 'Mix kitchen waste with dry leaves. Turn every week for better decomposition.', icon: '🌿' }
-    ];
-    
-    renderAdvice();
+// === AI ADVISORY MOCK (OPTIONAL BACKEND HOOK) ===
+async function getAIAdvice(cropName) {
+  try {
+    const res = await fetch(`/api/advisory?crop=${cropName}`);
+    const data = await res.json();
+    alert(`🌾 Advisory for ${cropName}:\n\n${data.advice}`);
+  } catch (err) {
+    alert("Error fetching AI advisory");
+  }
 }
 
-// Render advice
-function renderAdvice() {
-    const container = document.getElementById('adviceContainer');
-    
-    if (container) {
-        container.innerHTML = adviceData.map(advice => `
-            <div class="item-card" style="margin-bottom: 1rem;">
-                <div style="display: flex; align-items: start; gap: 1rem;">
-                    <span style="font-size: 3rem;">${advice.icon}</span>
-                    <div style="flex: 1;">
-                        <h3 style="margin-bottom: 0.5rem;">${advice.title}</h3>
-                        <p style="margin: 0; color: var(--gray);">${advice.content}</p>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-}
-
-// Filter by search
-function filterAdvice() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const container = document.getElementById('adviceContainer');
-    
-    if (container) {
-        const filtered = adviceData.filter(advice => {
-            return advice.title.toLowerCase().includes(searchTerm) ||
-                   advice.content.toLowerCase().includes(searchTerm);
-        });
-        
-        container.innerHTML = filtered.map(advice => `
-            <div class="item-card" style="margin-bottom: 1rem;">
-                <div style="display: flex; align-items: start; gap: 1rem;">
-                    <span style="font-size: 3rem;">${advice.icon}</span>
-                    <div style="flex: 1;">
-                        <h3 style="margin-bottom: 0.5rem;">${advice.title}</h3>
-                        <p style="margin: 0; color: var(--gray);">${advice.content}</p>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-}
-
-// Filter by category
-function filterByCategory(category) {
-    activeCategory = category;
-    
-    // Update filter buttons
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    
-    const container = document.getElementById('adviceContainer');
-    if (!container) return;
-    
-    const filtered = category === 'all' ? adviceData : adviceData.filter(a => a.category === category);
-    
-    container.innerHTML = filtered.map(advice => `
-        <div class="item-card" style="margin-bottom: 1rem;">
-            <div style="display: flex; align-items: start; gap: 1rem;">
-                <span style="font-size: 3rem;">${advice.icon}</span>
-                <div style="flex: 1;">
-                    <h3 style="margin-bottom: 0.5rem;">${advice.title}</h3>
-                    <p style="margin: 0; color: var(--gray);">${advice.content}</p>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Load crop calendar
-function loadCropCalendar() {
-    const container = document.getElementById('cropCalendar');
-    
-    if (container) {
-        container.innerHTML = `
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-                <div style="padding: 1rem; background: var(--white); border: 2px solid var(--primary-green); border-radius: var(--border-radius);">
-                    <h3 style="margin-bottom: 0.5rem; color: var(--primary-green);">🌾 Wheat</h3>
-                    <p style="margin: 0; font-size: 0.875rem;">Sowing: Nov-Dec</p>
-                    <p style="margin: 0; font-size: 0.875rem;">Harvest: Mar-Apr</p>
-                </div>
-                <div style="padding: 1rem; background: var(--white); border: 2px solid var(--primary-green); border-radius: var(--border-radius);">
-                    <h3 style="margin-bottom: 0.5rem; color: var(--primary-green);">🌾 Rice</h3>
-                    <p style="margin: 0; font-size: 0.875rem;">Sowing: Jun-Jul</p>
-                    <p style="margin: 0; font-size: 0.875rem;">Harvest: Oct-Nov</p>
-                </div>
-                <div style="padding: 1rem; background: var(--white); border: 2px solid var(--primary-green); border-radius: var(--border-radius);">
-                    <h3 style="margin-bottom: 0.5rem; color: var(--primary-green);">🥔 Potato</h3>
-                    <p style="margin: 0; font-size: 0.875rem;">Sowing: Jan-Feb</p>
-                    <p style="margin: 0; font-size: 0.875rem;">Harvest: Apr-May</p>
-                </div>
-                <div style="padding: 1rem; background: var(--white); border: 2px solid var(--primary-green); border-radius: var(--border-radius);">
-                    <h3 style="margin-bottom: 0.5rem; color: var(--primary-green);">🫘 Pulses</h3>
-                    <p style="margin: 0; font-size: 0.875rem;">Sowing: Jun-Jul</p>
-                    <p style="margin: 0; font-size: 0.875rem;">Harvest: Oct-Nov</p>
-                </div>
-            </div>
-        `;
-    }
-}
-
-// Load schemes information
-function loadSchemes() {
-    const container = document.getElementById('schemesInfo');
-    
-    if (container) {
-        container.innerHTML = `
-            <div class="item-card" style="margin-bottom: 1rem;">
-                <h3 style="margin-bottom: 0.5rem;">💳 PM Kisan Scheme</h3>
-                <p style="margin: 0; color: var(--gray);">Direct income support of ₹6,000 per year to farmers</p>
-            </div>
-            <div class="item-card" style="margin-bottom: 1rem;">
-                <h3 style="margin-bottom: 0.5rem;">🌾 Pradhan Mantri Fasal Bima Yojana</h3>
-                <p style="margin: 0; color: var(--gray);">Crop insurance against natural disasters</p>
-            </div>
-            <div class="item-card" style="margin-bottom: 1rem;">
-                <h3 style="margin-bottom: 0.5rem;">💧 Micro Irrigation Scheme</h3>
-                <p style="margin: 0; color: var(--gray);">Subsidies for drip and sprinkler irrigation systems</p>
-            </div>
-        `;
-    }
-}
-
-// Load experts information
-function loadExperts() {
-    const container = document.getElementById('expertInfo');
-    
-    if (container) {
-        container.innerHTML = `
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-                <div class="item-card">
-                    <h3 style="margin-bottom: 0.5rem;">👨‍🌾 Dr. Rajesh Kumar</h3>
-                    <p style="margin: 0; color: var(--gray);">Agricultural Specialist</p>
-                    <p style="margin: 0; color: var(--gray);">⭐ 4.8 | 500+ Consultations</p>
-                </div>
-                <div class="item-card">
-                    <h3 style="margin-bottom: 0.5rem;">👩‍🌾 Dr. Priya Sharma</h3>
-                    <p style="margin: 0; color: var(--gray);">Crop Expert</p>
-                    <p style="margin: 0; color: var(--gray);">⭐ 4.9 | 300+ Consultations</p>
-                </div>
-                <div class="item-card">
-                    <h3 style="margin-bottom: 0.5rem;">👨‍🌾 Dr. Amit Verma</h3>
-                    <p style="margin: 0; color: var(--gray);">Soil Scientist</p>
-                    <p style="margin: 0; color: var(--gray);">⭐ 4.7 | 450+ Consultations</p>
-                </div>
-            </div>
-        `;
-    }
-}
-
-// Open expert booking
-function openExpertBooking() {
-    showModal('expertModal');
-}
-
-// Close expert modal
-function closeExpertModal() {
-    closeModal('expertModal');
-    document.getElementById('expertBookingForm').reset();
-}
-
-// Handle expert booking
-document.getElementById('expertBookingForm')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const expert = document.getElementById('expertSelect').value;
-    const date = document.getElementById('expertDate').value;
-    const time = document.getElementById('expertTime').value;
-    const query = document.getElementById('expertQuery').value;
-    
-    showSuccess('Expert consultation booked successfully!');
-    closeExpertModal();
-});
-
-// Export functions
-window.filterAdvice = filterAdvice;
-window.filterByCategory = filterByCategory;
-window.openExpertBooking = openExpertBooking;
-window.closeExpertModal = closeExpertModal;
+// === INIT ===
+document.addEventListener("DOMContentLoaded", getWeather);
 
