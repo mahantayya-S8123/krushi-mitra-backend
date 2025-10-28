@@ -1,5 +1,6 @@
+
 // =========================================
-// KrushiMitra - Unified Backend + Frontend Server
+// 🌾 KrushiMitra - Unified Backend + Frontend Server
 // =========================================
 
 const express = require("express");
@@ -8,9 +9,6 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const path = require("path");
 
-// --------------------
-// Configuration
-// --------------------
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -18,9 +16,14 @@ const PORT = process.env.PORT || 4000;
 // --------------------
 // Middleware
 // --------------------
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:4000", "https://krushi-mitra-frontend.onrender.com"],
+    credentials: true,
+  })
+);
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // ✅ handles form submissions
+app.use(express.urlencoded({ extended: true }));
 
 // --------------------
 // MongoDB Connection
@@ -37,7 +40,7 @@ mongoose
   });
 
 // --------------------
-// Routes
+// API Routes
 // --------------------
 const authRoutes = require("../routes/authRoutes");
 const serviceRoutes = require("../routes/servicesRoutes");
@@ -50,7 +53,25 @@ app.use("/api/mandi", mandiRoutes);
 app.use("/api/products", productRoutes);
 
 // --------------------
-// Test DB Routes
+// Common API (Frontend-Compatible)
+// --------------------
+app.get("/api/common", (req, res) => {
+  res.json({
+    name: "KrushiMitra Unified API",
+    status: "Active",
+    version: "1.0",
+    base_url: "https://krushi-mitra-backend-1.onrender.com",
+    endpoints: {
+      auth: "/api/auth",
+      services: "/api/services",
+      mandi: "/api/mandi",
+      products: "/api/products",
+    },
+  });
+});
+
+// --------------------
+// DB Test Routes
 // --------------------
 const User = require("../models/User");
 
@@ -80,15 +101,14 @@ app.post("/api/test-db", async (req, res) => {
 app.get("/api/ping", (req, res) => res.send("pong"));
 
 // --------------------
-// Serve Frontend
+// Serve Frontend Files
 // --------------------
+const publicPath = path.join(__dirname, "../public");
+app.use(express.static(publicPath));
 
-// ✅ Serve static frontend files
-app.use(express.static(path.join(__dirname, "../public")));
-
-// ✅ Send index.html for any unknown routes
+// ✅ SPA Route Fallback
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+  res.sendFile(path.join(publicPath, "index.html"));
 });
 
 // --------------------
@@ -96,5 +116,5 @@ app.get("*", (req, res) => {
 // --------------------
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`🌐 Visit: https://krushi-mitra-backend-1.onrender.com`);
+  console.log(`🌐 Visit: http://localhost:${PORT}`);
 });
