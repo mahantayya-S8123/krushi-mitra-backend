@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mandi Prices - KrushiMitra</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span>🌾</span>
+                <span>KrushiMitra</span>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+            <nav class="nav">
+                <a href="dashboard.html">🏠 Dashboard</a>
+                <a href="mandi-prices.html" class="active">💰 Prices</a>
+                <a href="marketplace.html">🛒 Marketplace</a>
+                <a href="services.html">🚜 Services</a>
+                <a href="advisory.html">🌱 Advisory</a>
+                <a href="#" onclick="logout()">🚪 Logout</a>
+            </nav>
+            <div class="header-controls">
+                <button class="voice-btn" onclick="toggleVoice()" aria-label="Voice control">🎤</button>
+                <select class="lang-selector" id="langSelect" onchange="changeLanguage(this.value)">
+                    <option value="en">EN</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="mr">मराठी</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="container">
+        <div class="content-section">
+            <div class="section-header">
+                <h2>💰 Mandi Prices</h2>
+            </div>
+            
+            <div class="voice-controls">
+                <button class="voice-control-btn" onclick="readAllPrices()">
+                    🔊 Read All Prices
+                </button>
+                <button class="voice-control-btn" onclick="stopReading()">
+                    ⏹️ Stop Reading
+                </button>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Search crops or markets..." onkeyup="filterPrices()">
+            </div>
+
+            <div class="filter-buttons" id="filterButtons">
+                <button class="filter-btn active" onclick="filterByCategory('all')">All</button>
+                <button class="filter-btn" onclick="filterByCategory('cereals')">🌾 Cereals</button>
+                <button class="filter-btn" onclick="filterByCategory('vegetables')">🥕 Vegetables</button>
+                <button class="filter-btn" onclick="filterByCategory('fruits')">🍎 Fruits</button>
+                <button class="filter-btn" onclick="filterByCategory('pulses')">🫘 Pulses</button>
+            </div>
+
+            <div id="pricesContainer" class="items-grid">
+                <!-- Prices will be loaded here -->
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>📊 Market Trends</h2>
+            <div id="marketTrends">
+                <p>Loading market trends...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/common.js"></script>
+    <script src="js/mandi-prices.js"></script>
+</body>
+</html>
+

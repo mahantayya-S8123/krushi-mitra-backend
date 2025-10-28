@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advisory - KrushiMitra</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span>🌾</span>
+                <span>KrushiMitra</span>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+            <nav class="nav">
+                <a href="dashboard.html">🏠 Dashboard</a>
+                <a href="mandi-prices.html">💰 Prices</a>
+                <a href="marketplace.html">🛒 Marketplace</a>
+                <a href="services.html">🚜 Services</a>
+                <a href="advisory.html" class="active">🌱 Advisory</a>
+                <a href="#" onclick="logout()">🚪 Logout</a>
+            </nav>
+            <div class="header-controls">
+                <button class="voice-btn" onclick="toggleVoice()" aria-label="Voice control">🎤</button>
+                <select class="lang-selector" id="langSelect" onchange="changeLanguage(this.value)">
+                    <option value="en">EN</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="mr">मराठी</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="container">
+        <div class="content-section">
+            <div class="section-header">
+                <h2>🌤️ Weather Update</h2>
+            </div>
+            <div id="weatherInfo">
+                <!-- Weather information will be loaded here -->
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2>🌱 Farming Tips</h2>
+            </div>
+            
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Search for farming advice..." onkeyup="filterAdvice()">
+            </div>
+
+            <div class="filter-buttons" id="filterButtons">
+                <button class="filter-btn active" onclick="filterByCategory('all')">All</button>
+                <button class="filter-btn" onclick="filterByCategory('seasonal')">🌾 Seasonal</button>
+                <button class="filter-btn" onclick="filterByCategory('pest')">🐛 Pest Control</button>
+                <button class="filter-btn" onclick="filterByCategory('fertilizer')">🌿 Fertilizers</button>
+                <button class="filter-btn" onclick="filterByCategory('water')">💧 Water Management</button>
+            </div>
+
+            <div id="adviceContainer">
+                <!-- Advice cards will be loaded here -->
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2>📅 Crop Calendar</h2>
+            </div>
+            <div id="cropCalendar">
+                <!-- Crop calendar will be loaded here -->
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2>🏛️ Government Schemes</h2>
+            </div>
+            <div id="schemesInfo">
+                <!-- Scheme information will be loaded here -->
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2>👨‍🌾 Expert Consultation</h2>
+                <button class="btn-secondary" onclick="openExpertBooking()">Book Consultation</button>
+            </div>
+            <div id="expertInfo">
+                <!-- Expert information will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Expert Booking Modal -->
+    <div class="modal" id="expertModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeExpertModal()">&times;</button>
+            <h2>Book Expert Consultation</h2>
+            <form id="expertBookingForm" class="booking-form">
+                <div class="form-group">
+                    <label>👨‍🌾 Select Expert</label>
+                    <select id="expertSelect" required>
+                        <option value="">Choose an expert</option>
+                        <option value="agricultural-specialist">Agricultural Specialist</option>
+                        <option value="crop-expert">Crop Expert</option>
+                        <option value="soil-scientist">Soil Scientist</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>📅 Select Date</label>
+                    <input type="date" id="expertDate" required>
+                </div>
+                <div class="form-group">
+                    <label>⏰ Select Time</label>
+                    <input type="time" id="expertTime" required>
+                </div>
+                <div class="form-group">
+                    <label>💬 Query</label>
+                    <textarea id="expertQuery" rows="4" placeholder="Describe your farming question or issue..." required></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/advisory.js"></script>
+</body>
+</html>
+

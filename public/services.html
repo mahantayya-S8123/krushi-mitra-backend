@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - KrushiMitra</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span>🌾</span>
+                <span>KrushiMitra</span>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+            <nav class="nav">
+                <a href="dashboard.html">🏠 Dashboard</a>
+                <a href="mandi-prices.html">💰 Prices</a>
+                <a href="marketplace.html">🛒 Marketplace</a>
+                <a href="services.html" class="active">🚜 Services</a>
+                <a href="advisory.html">🌱 Advisory</a>
+                <a href="#" onclick="logout()">🚪 Logout</a>
+            </nav>
+            <div class="header-controls">
+                <button class="voice-btn" onclick="toggleVoice()" aria-label="Voice control">🎤</button>
+                <select class="lang-selector" id="langSelect" onchange="changeLanguage(this.value)">
+                    <option value="en">EN</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="mr">मराठी</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="container">
+        <div class="content-section">
+            <div class="section-header">
+                <h2>🚜 Farming Services</h2>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Search services..." onkeyup="filterServices()">
+            </div>
+
+            <div class="filter-buttons" id="filterButtons">
+                <button class="filter-btn active" onclick="filterByCategory('all')">All</button>
+                <button class="filter-btn" onclick="filterByCategory('tractor')">🚜 Tractor</button>
+                <button class="filter-btn" onclick="filterByCategory('harvesting')">🌾 Harvesting</button>
+                <button class="filter-btn" onclick="filterByCategory('irrigation')">💧 Irrigation</button>
+                <button class="filter-btn" onclick="filterByCategory('spraying')">🧪 Spraying</button>
+            </div>
+
+            <div id="servicesContainer" class="items-grid">
+                <!-- Services will be loaded here -->
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>📋 My Bookings</h2>
+            <div id="myBookings">
+                <p>No bookings yet</p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>💡 Booking Guidelines</h2>
+            <div id="bookingGuidelines">
+                <ul>
+                    <li>✅ Book services at least 2-3 days in advance</li>
+                    <li>✅ Confirm your booking with a phone call</li>
+                    <li>✅ Be present at the farm at the scheduled time</li>
+                    <li>✅ Payment can be made in cash or digital after service</li>
+                    <li>✅ Check the service provider's ratings and reviews</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Booking Modal -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeBookingModal()">&times;</button>
+            <h2 id="modalServiceName">Book Service</h2>
+            <form id="bookingForm" class="booking-form">
+                <div class="form-group">
+                    <label>📅 Select Date</label>
+                    <input type="date" id="bookingDate" required>
+                </div>
+                <div class="date-time-picker">
+                    <div class="form-group">
+                        <label>⏰ Start Time</label>
+                        <input type="time" id="startTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>⏰ End Time</label>
+                        <input type="time" id="endTime" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>📍 Location</label>
+                    <input type="text" id="bookingLocation" placeholder="Enter your farm location" required>
+                </div>
+                <div class="form-group">
+                    <label>📱 Contact Number</label>
+                    <input type="tel" id="bookingPhone" placeholder="Enter contact number" required>
+                </div>
+                <div class="form-group">
+                    <label>💬 Additional Notes</label>
+                    <textarea id="bookingNotes" rows="3" placeholder="Any special requirements..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Provider Registration Modal -->
+    <div class="modal" id="providerModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeProviderModal()">&times;</button>
+            <h2>Become a Service Provider</h2>
+            <form id="providerForm" class="booking-form">
+                <div class="form-group">
+                    <label>🚜 Service Type</label>
+                    <select id="providerServiceType" required>
+                        <option value="">Select service type</option>
+                        <option value="tractor">Tractor Rental</option>
+                        <option value="harvesting">Harvesting Service</option>
+                        <option value="irrigation">Irrigation Service</option>
+                        <option value="spraying">Spraying Service</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>👤 Name</label>
+                    <input type="text" id="providerName" required>
+                </div>
+                <div class="form-group">
+                    <label>📱 Phone Number</label>
+                    <input type="tel" id="providerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>📍 Location</label>
+                    <input type="text" id="providerLocation" required>
+                </div>
+                <div class="form-group">
+                    <label>💰 Rate per Hour</label>
+                    <input type="number" id="providerRate" required>
+                </div>
+                <button type="submit" class="btn-primary">Register as Provider</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/services.js"></script>
+</body>
+</html>
+

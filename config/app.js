@@ -83,10 +83,15 @@ app.get('/api/ping', (req, res) => res.send('pong'));
 // --------------------
 // Frontend Integration
 // --------------------
-app.use(express.static(path.join(__dirname, '../../my-frontend')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../my-frontend/index.html'));
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, '../public')));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
+
+
+// other backend routes...
+
 
 // --------------------
 // Start Server
