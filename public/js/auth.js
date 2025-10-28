@@ -4,6 +4,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     initAuth();
+    initAuthTabs();
 });
 
 // Initialize authentication
@@ -111,6 +112,38 @@ async function handleSignup(e) {
 }
 
 // ========================================
+// Auth Tab Switching Logic
+// ========================================
+function initAuthTabs() {
+    const signupLink = document.querySelector('#goToSignup');
+    const loginLink = document.querySelector('#goToLogin');
+
+    if (signupLink) {
+        signupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSignup();
+        });
+    }
+
+    if (loginLink) {
+        loginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showLogin();
+        });
+    }
+}
+
+function showLogin() {
+    document.getElementById('loginForm').classList.add('active');
+    document.getElementById('signupForm').classList.remove('active');
+}
+
+function showSignup() {
+    document.getElementById('signupForm').classList.add('active');
+    document.getElementById('loginForm').classList.remove('active');
+}
+
+// ========================================
 // Utility Helpers
 // ========================================
 function isValidEmail(email) {
@@ -142,9 +175,4 @@ function speak(text) {
         const utter = new SpeechSynthesisUtterance(text);
         speechSynthesis.speak(utter);
     }
-}
-
-function showLogin() {
-    document.getElementById('loginForm').classList.add('active');
-    document.getElementById('signupForm').classList.remove('active');
 }
