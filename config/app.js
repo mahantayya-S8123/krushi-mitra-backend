@@ -1,3 +1,7 @@
+// =========================================
+// KrushiMitra - Unified Backend + Frontend Server
+// =========================================
+
 // --------------------
 // Import required modules
 // --------------------
@@ -5,10 +9,10 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const path = require('path'); // ✅ imported at top
+const path = require('path');
 
 // --------------------
-// Configurations
+// Configuration
 // --------------------
 dotenv.config();
 const app = express();
@@ -44,7 +48,6 @@ mongoose.connection.on("disconnected", () => {
 // --------------------
 const authRoutes = require('../routes/authRoutes');
 const userRoutes = require('../routes/userRoutes');
-
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
@@ -83,15 +86,13 @@ app.get('/api/ping', (req, res) => res.send('pong'));
 // --------------------
 // Frontend Integration
 // --------------------
-// Serve static frontend files
+// ✅ Serve static frontend files (from /public)
 app.use(express.static(path.join(__dirname, '../public')));
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public', 'index.html'));
+
+// ✅ Fallback route for SPA / HTML pages
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
-
-
-// other backend routes...
-
 
 // --------------------
 // Start Server
