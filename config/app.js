@@ -25,6 +25,7 @@ const PORT = process.env.PORT || 4000;
 // --------------------
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // ✅ handles form submissions
 
 // --------------------
 // MongoDB Connection
@@ -51,7 +52,7 @@ mongoose.connection.on("disconnected", () => {
 // ✅ Ensure these files exist inside /routes folder
 const authRoutes = require("../routes/authRoutes");
 const serviceRoutes = require("../routes/servicesRoutes");
-const mandiRoutes = require(path.join(__dirname, "../routes/mandiRoutes"));
+const mandiRoutes = require("../routes/mandiRoutes");
 const productRoutes = require("../routes/productRoutes");
 
 // ✅ Route Mounting
@@ -93,10 +94,10 @@ app.get("/api/ping", (req, res) => res.send("pong"));
 // --------------------
 // Frontend Integration
 // --------------------
-// ✅ Serve frontend (static)
+// ✅ Serve static frontend files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, "../public")));
 
-// ✅ Fallback for SPA
+// ✅ Fallback for any unknown routes
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../public", "index.html"));
 });
@@ -106,4 +107,5 @@ app.get("*", (req, res) => {
 // --------------------
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🌐 Visit: https://krushi-mitra-backend-1.onrender.com`);
 });
