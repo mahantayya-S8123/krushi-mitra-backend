@@ -5,17 +5,19 @@
 // --------------------
 // Import required modules
 // --------------------
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const path = require('path');
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const path = require("path");
 
 // --------------------
 // Configuration
 // --------------------
 dotenv.config();
 const app = express();
+
+// ✅ Ensure PORT variable (Render uses dynamic port)
 const PORT = process.env.PORT || 4000;
 
 // --------------------
@@ -27,12 +29,13 @@ app.use(express.json());
 // --------------------
 // MongoDB Connection
 // --------------------
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-})
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+  })
   .then(() => console.log("✅ MongoDB Connected Successfully"))
   .catch((err) => {
     console.error("❌ MongoDB Connection Failed:", err.message);
@@ -46,18 +49,18 @@ mongoose.connection.on("disconnected", () => {
 // --------------------
 // Routes
 // --------------------
-const authRoutes = require('../routes/authRoutes');
-const userRoutes = require('../routes/userRoutes');
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
+const authRoutes = require("../routes/authRoutes");
+const userRoutes = require("../routes/userRoutes");
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 // --------------------
 // Test DB Routes
 // --------------------
-const User = require('../models/User');
+const User = require("../models/User");
 
 // GET all users
-app.get('/api/test-db', async (req, res) => {
+app.get("/api/test-db", async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json({ success: true, count: users.length, users });
@@ -67,7 +70,7 @@ app.get('/api/test-db', async (req, res) => {
 });
 
 // POST create test user
-app.post('/api/test-db', async (req, res) => {
+app.post("/api/test-db", async (req, res) => {
   try {
     const { name, email, password, role, location } = req.body;
     const newUser = new User({ name, email, password, role, location });
@@ -81,17 +84,17 @@ app.post('/api/test-db', async (req, res) => {
 // --------------------
 // Health Check
 // --------------------
-app.get('/api/ping', (req, res) => res.send('pong'));
+app.get("/api/ping", (req, res) => res.send("pong"));
 
 // --------------------
 // Frontend Integration
 // --------------------
 // ✅ Serve static frontend files (from /public)
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, "../public")));
 
 // ✅ Fallback route for SPA / HTML pages
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public", "index.html"));
 });
 
 // --------------------

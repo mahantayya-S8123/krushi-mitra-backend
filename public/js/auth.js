@@ -1,5 +1,5 @@
 // ========================================
-// KrushiMitra - Authentication Logic (Connected to Backend)
+// KrushiMitra - Authentication Logic (Connected to Live Backend)
 // ========================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -14,6 +14,11 @@ function initAuth() {
     const signupForm = document.getElementById('signupFormElement');
     if (signupForm) signupForm.addEventListener('submit', handleSignup);
 }
+
+// ========================================
+// Backend Base URL
+// ========================================
+const BASE_URL = "https://krushi-mitra-backend-1.onrender.com";
 
 // ========================================
 // Login Handler
@@ -31,7 +36,7 @@ async function handleLogin(e) {
     hideMessages();
 
     try {
-        const res = await fetch('http://localhost:4000/api/users/login', {
+        const res = await fetch(`${BASE_URL}/api/users/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -81,7 +86,7 @@ async function handleSignup(e) {
     hideMessages();
 
     try {
-        const res = await fetch('http://localhost:4000/api/users/signup', {
+        const res = await fetch(`${BASE_URL}/api/users/signup`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password, role, location })
@@ -121,20 +126,24 @@ function showSuccess(msg) {
 }
 
 function hideMessages() {}
+
 function showLoader(id) {
     const el = document.getElementById(id);
     if (el) el.style.display = 'inline-block';
 }
+
 function hideLoader(id) {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
 }
+
 function speak(text) {
     if ('speechSynthesis' in window) {
         const utter = new SpeechSynthesisUtterance(text);
         speechSynthesis.speak(utter);
     }
 }
+
 function showLogin() {
     document.getElementById('loginForm').classList.add('active');
     document.getElementById('signupForm').classList.remove('active');
